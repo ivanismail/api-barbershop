@@ -19,11 +19,11 @@ class CreateBookingsTable extends Migration
             $table->string('service_id');
             $table->string('shaver_id');
             $table->string('user_id');
-            $table->string('service_name');
             $table->double('price');
             $table->string('date');
             $table->string('time');
             $table->string('payment_methode');
+            $table->string('note');
             $table->string('status');
             $table->timestamps();
         });
