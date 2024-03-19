@@ -6,12 +6,20 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Service extends Model
+class Booking extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'category_id','service_name','price','desc'
+        'category_id',
+        'service_id',
+        'shaver_id',
+        'user_id',
+        'price',
+        'date',
+        'time',
+        'payment_methode',
+        'status',
     ];
 
     public function GetCreatedAttribute($value)

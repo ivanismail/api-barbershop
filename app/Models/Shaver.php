@@ -6,12 +6,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Service extends Model
+class Shaver extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'category_id','service_name','price','desc'
+        'shaver_name','photo'
     ];
 
     public function GetCreatedAttribute($value)

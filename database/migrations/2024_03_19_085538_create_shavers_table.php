@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateShaverModelsTable extends Migration
+class CreateShaversTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateShaverModelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('shaver_models', function (Blueprint $table) {
+        Schema::create('shavers', function (Blueprint $table) {
             $table->id();
             $table->string('shaver_name');
-            $table->string('photo'); 
+            $table->string('photo');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateShaverModelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shaver_models');
+        Schema::dropIfExists('shavers');
     }
 }
