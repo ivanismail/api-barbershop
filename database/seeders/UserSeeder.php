@@ -13,9 +13,10 @@ class UserSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
-         // insert data ke table user
-         DB::table('users')->insert([
+    {        
+        DB::table('users')->truncate();
+         //* insert data ke table user
+        DB::table('users')->insert([
         	'name' => 'Ivan Ismail',
         	'phone_number' => '+628123456789',
             'password' => '$2y$10$9AvuQce5sU0TJLRRz80Nje3QJlRVZEgmIHGFXhJccc0pFtQzIGAP6',

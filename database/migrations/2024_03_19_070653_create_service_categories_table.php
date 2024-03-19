@@ -16,6 +16,7 @@ class CreateServiceCategoriesTable extends Migration
         Schema::create('service_categories', function (Blueprint $table) {
             $table->id();
             $table->string('category_name');
+            $table->boolean('active')->nullable();
             $table->timestamps();
         });
     }
