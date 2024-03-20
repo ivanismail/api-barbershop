@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
         	'name' => 'Ivan Ismail',
         	'phone_number' => '+628123456789',
-            'password' => '$2y$10$9AvuQce5sU0TJLRRz80Nje3QJlRVZEgmIHGFXhJccc0pFtQzIGAP6',
+            'password' => '$10$3sOXRqF0BBS/JRCne7vxvOon6PMfZpKdZWdQDpLkZH3ssqe54NtSe',
             'active' => true,
         ]);
     }
