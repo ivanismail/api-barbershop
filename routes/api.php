@@ -26,19 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('shaver', [ApiController::class, 'shaver']);
     Route::get('service-category', [ApiController::class, 'service_category']);
     Route::post('service', [ApiController::class, 'service']);
+    Route::get('booking', [ApiController::class, 'history']);
     Route::get('booking', [ApiController::class, 'booking']);
-    // //*USER
-    // Route::prefix('profile')->name('profile.')->group(function () {
-    //     Route::get('/', [UserController::class, 'profile'])->name('profile');
-    //     Route::post('/update-photo', [UserController::class, 'updateFotoProfile'])->name('updateFotoProfile');
-    //     Route::post('/update', [UserController::class, 'updateProfile'])->name('updateProfile');
-    //     Route::post('/change-password', [UserController::class, 'changePassword'])->name('changePassword');
-    //     Route::post('/check', [UserController::class, 'check'])->name('check');
-    //     Route::post('/delete-account', [UserController::class, 'deleteAccount'])->name('deleteAccount');
-    // });
-    // //*GENERAL SETTING
-    // Route::prefix('general-setting')->name('general-setting.')->group(function () {
-    //     Route::post('/', [GeneralSettingController::class, 'fetch'])->name('fetch');
-    //     Route::post('/icon', [GeneralSettingController::class, 'icon'])->name('icon');
-    // });
+    Route::get('profile', [ApiController::class, 'profile']);
 });

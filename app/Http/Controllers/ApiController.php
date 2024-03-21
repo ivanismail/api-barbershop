@@ -9,6 +9,7 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use App\Models\ServiceCategory;
+use App\Models\User;
 
 class ApiController extends Controller
 {
@@ -54,7 +55,7 @@ class ApiController extends Controller
              return Res::error($th, 'Server Error');
          } 
      }
-     public function booking(Request $request)
+     public function history(Request $req)
      {
          try {
              $data = Booking::join('service_categories as b', 'bookings.category_id', '=', 'b.id')
@@ -82,20 +83,17 @@ class ApiController extends Controller
              return Res::error($th, 'Server Error');
          } 
      }
-    //  public function booking(Request $request)
-    //  {
-    //      try {
-    //          $data = Shaver::join('general_settings as b', 'bookings.category', '=', 'b.value')
-    //                                  ->join('general_settings as d', 'bookings.status', '=', 'd.value')                                    
-    //                                  ->where('user_id',auth()->user()->id)
-    //                                  ->where('b.code','CATEGORYWALLET')
-    //                                  ->where('d.code', 'STATUSTRANS')
-    //                                  ->orderBy('bookings.id', 'DESC') 
-    //                                  ->whereDate('bookings.created_at', '>', Carbon::now()->subDays(30)) 
-    //                                  ->get(['bookings.id','bookings.description','bookings.inv_id','bookings.amount','b.description as category','bookings.created_at', 'd.description as status']);
-    //          return Res::success($data, 'Data transaksi wallet');
-    //      } catch (\Throwable $th) {
-    //          return Res::error('Internal Server', 'Server Error');
-    //      } 
-    //  }
+     public function profile(Request $req)
+     {
+         try {
+             //* CEK USER ACTIVE
+            $user = User::whereId(auth()->user()->id)->where('active', '1')->first();
+            if(is_null($user)){
+                return Res::error(null, "User Not Found");
+            }
+             return Res::success($user, 'Data Profile');
+         } catch (\Throwable $th) {
+             return Res::error($th, 'Server Error');
+         } 
+     }
 }
