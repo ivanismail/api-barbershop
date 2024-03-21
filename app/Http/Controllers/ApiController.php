@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Library\Res;
 use App\Models\Shaver;
 use App\Models\Booking;
+use App\Models\GeneralSetting;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -92,6 +93,15 @@ class ApiController extends Controller
                 return Res::error(null, "User Not Found");
             }
              return Res::success($user, 'Data Profile');
+         } catch (\Throwable $th) {
+             return Res::error($th, 'Server Error');
+         } 
+     }
+     public function gs(Request $req)
+     {
+         try {
+            $data = GeneralSetting::where(['active'=>'1','code'=>$req->code])->get();
+             return Res::success($data, 'Data General Setting');
          } catch (\Throwable $th) {
              return Res::error($th, 'Server Error');
          } 
