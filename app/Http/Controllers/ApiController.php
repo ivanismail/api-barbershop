@@ -58,14 +58,25 @@ class ApiController extends Controller
      {
          try {
              $data = Booking::join('service_categories as b', 'bookings.category_id', '=', 'b.id')
-                                     ->join('general_settings as c', 'bookings.status', '=', 'c.value')
-                                     ->join('general_settings as d', 'bookings.status', '=', 'c.value')                                    
+                                     ->join('general_settings as c', 'bookings.status', '=', 'c.value')                                     
+                                     ->join('services as d', 'bookings.service_id', '=', 'd.id')
+                                     ->join('shavers as e', 'bookings.shaver_id', '=', 'e.id')
                                      ->where('user_id',auth()->user()->id)
-                                     ->where('b.code','STS')
-                                     ->where('c.code', 'PAYMENT')
+                                     ->where('c.code','STS')
                                      ->orderBy('bookings.id', 'DESC') 
                                      ->whereDate('bookings.created_at', '>', Carbon::now()->subDays(30)) 
-                                     ->get(['bookings.id','bookings.note','bookings.category_id','bookings.price','b.description as category','bookings.created_at', 'd.description as status']);
+                                     ->get(['bookings.id',   
+                                            'b.category_name as category',
+                                            'd.service_name as service',
+                                            'e.shaver_name as shaver',
+                                            'bookings.price',
+                                            'bookings.date',                                            
+                                            'bookings.time',
+                                            'bookings.payment_methode',
+                                            'bookings.note',
+                                            'c.description as status',
+                                            'bookings.created_at'
+                                        ]);
              return Res::success($data, 'Data Booking');
          } catch (\Throwable $th) {
              return Res::error($th, 'Server Error');
