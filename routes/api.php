@@ -27,7 +27,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('service-category', [ApiController::class, 'service_category']);
     Route::post('service', [ApiController::class, 'service']);
     Route::get('booking', [ApiController::class, 'history']);
-    Route::get('booking', [ApiController::class, 'booking']);
+    Route::post('booking', [ApiController::class, 'booking']);
     Route::get('profile', [ApiController::class, 'profile']);
     Route::post('general-setting', [ApiController::class, 'gs']);
 });
