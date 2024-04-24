@@ -125,7 +125,7 @@ class ApiController extends Controller
                 return Res::error(null, "User Not Found");
             }
              //* CEK BOOKING PENDING
-            $booking = Booking::where(['status'=>'1'])->whereDate('created_at', Carbon::today())->first();
+            $booking = Booking::whereIn('status', array('1', '2'))->whereDate('created_at', Carbon::today())->first();
             if($booking){
                 return Res::error($booking, "Masih ada transaksi yang belum dibayar.");
             }
@@ -163,6 +163,39 @@ class ApiController extends Controller
             return Res::success($create, 'Berhasil membuat booking');
          } catch (\Throwable $th) {            
             DB::rollBack(); 
+            return Res::error($th, 'Server Error');
+         } 
+     }
+     public function check_availability(Request $req)
+     {
+         $shaver = $req->input('shaver');         
+         $date = $req->input('date');                
+         try {            
+            //* CEK USER ACTIVE
+            $user = User::whereId(auth()->user()->id)->where('active', '1')->first();
+            if(is_null($user)){
+                return Res::error(null, "User Not Found");
+            }
+             //* CEK KETERSEDIAAN
+            $booking = Booking::where('status', array('1', '2'))->whereDate('created_at', Carbon::today())->first();
+            if($booking){
+                return Res::error($booking, "Masih ada transaksi yang belum dibayar.");
+            }
+            $query = "SELECT 
+                        a.description as time,
+                        CASE
+                            WHEN count(b.id) > 0 THEN false
+                            WHEN count(b.id) = 0 THEN true
+                            ELSE true
+                        END AS available
+                        FROM
+                        general_settings a
+                        LEFT JOIN bookings b ON a.description = b.time AND b.date=:TGL AND b.shaver_id=:SHV
+                        WHERE a.code ='schedule' 
+                        GROUP BY a.description";
+            $transaction = DB::select($query,['TGL'=> $req->date, 'SHV'=>$req->shaver]);    
+            return Res::success($transaction, 'Data Ketersediaan Jadwal');
+         } catch (\Throwable $th) {   
             return Res::error($th, 'Server Error');
          } 
      }
