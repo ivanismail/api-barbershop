@@ -199,4 +199,24 @@ class ApiController extends Controller
             return Res::error($th, 'Server Error');
          } 
      }
+     public function queue(Request $req)
+     {
+         $shaver = $req->input('shaver');         
+         $date = $req->input('date');                
+         try { 
+            $dates = Carbon::today();
+            // Convert Carbon instance to date in a specific format
+            $dateString = $dates->format('Y-m-d'); // Format as YYYY-MM-DD           
+            //* CEK ANTRIAN
+            $query = "SELECT b.description as sts, COUNT(*) as total
+                        FROM bookings a
+                        LEFT JOIN general_settings b on a.`status` = b.`value` AND b.`code`='STS'
+                        WHERE date=:TGL
+                        GROUP BY sts;";
+            $transaction = DB::select($query,['TGL'=> $dateString]);    
+            return Res::success($transaction, 'Data Antrian');
+         } catch (\Throwable $th) {   
+            return Res::error($th, 'Server Error');
+         } 
+     }
 }
