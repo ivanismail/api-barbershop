@@ -20,8 +20,9 @@ class GeneralSeetingSeeder extends Seeder
         DB::table('general_settings')->insert([
             ['code' => 'STS', 'value' => '1', 'value_2' => '', 'description' => 'Menunggu Pembayaran', 'active' => true],            
             ['code' => 'STS', 'value' => '2', 'value_2' => '', 'description' => 'Menunggu Antrian', 'active' => true],
-            ['code' => 'STS', 'value' => '3', 'value_2' => '', 'description' => 'Selesai', 'active' => true],
-            ['code' => 'STS', 'value' => '4', 'value_2' => '', 'description' => 'Batal', 'active' => true],
+            ['code' => 'STS', 'value' => '3', 'value_2' => '', 'description' => 'Sedang Dicukur', 'active' => true],
+            ['code' => 'STS', 'value' => '4', 'value_2' => '', 'description' => 'Selesai', 'active' => true],
+            ['code' => 'STS', 'value' => '5', 'value_2' => '', 'description' => 'Batal', 'active' => true],
             ['code' => 'PAYMENT', 'value' => '1', 'value_2' => '', 'description' => 'Tunai', 'active' => true],            
             ['code' => 'PAYMENT', 'value' => '2', 'value_2' => '', 'description' => 'GOPAY', 'active' => true],
             ['code' => 'schedule', 'value' => '9', 'value_2' => '', 'description' => '09:00', 'active' => true],
