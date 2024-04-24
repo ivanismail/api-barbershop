@@ -21,6 +21,7 @@ class Booking extends Model
         'payment_methode',
         'note',
         'status',
+        'datetime'
     ];
 
     public function GetCreatedAttribute($value)

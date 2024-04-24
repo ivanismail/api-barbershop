@@ -25,6 +25,7 @@ class CreateBookingsTable extends Migration
             $table->string('payment_methode');
             $table->string('note');
             $table->string('status');
+            $table->dateTime('datetime');
             $table->timestamps();
         });
     }

@@ -117,7 +117,10 @@ class ApiController extends Controller
          $time = $req->input('time');
          $payment_methode = $req->input('payment_methode');
          $note = $req->input('note');
-         try {            
+         
+         $datetime = $date . ' ' . $time .':00';
+         $eventDateTime = Carbon::createFromFormat('Y-m-d H:i:s', $datetime);
+          try {            
             DB::beginTransaction();
             //* CEK USER ACTIVE
             $user = User::whereId(auth()->user()->id)->where('active', '1')->first();
@@ -125,10 +128,10 @@ class ApiController extends Controller
                 return Res::error(null, "User Not Found");
             }
              //* CEK BOOKING PENDING
-            $booking = Booking::whereIn('status', array('1', '2'))->whereDate('created_at', Carbon::today())->first();
-            if($booking){
-                return Res::error($booking, "Masih ada transaksi yang belum dibayar.");
-            }
+            // $booking = Booking::whereIn('status', array('1', '2'))->whereDate('created_at', Carbon::today())->first();
+            // if($booking){
+            //     return Res::error($booking, "Masih ada transaksi yang belum selesai.");
+            // }
             $create = null;
             if ($payment_methode == 'Tunai') {
                 $create = Booking::create([
@@ -143,6 +146,7 @@ class ApiController extends Controller
                     'payment_methode' => $payment_methode,
                     // 'expired' => Carbon::now()->addMinutes(60),
                     'status' => '2',
+                    'datetime' => $eventDateTime
                 ]);
             } else {
                 $create = Booking::create([
