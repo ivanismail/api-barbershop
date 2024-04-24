@@ -215,7 +215,7 @@ class ApiController extends Controller
             $query = "SELECT b.description as sts, COUNT(*) as total
                         FROM bookings a
                         LEFT JOIN general_settings b on a.`status` = b.`value` AND b.`code`='STS'
-                        WHERE date=:TGL
+                        WHERE date=:TGL AND STATUS not in ('1','4','5')
                         GROUP BY sts;";
             $transaction = DB::select($query,['TGL'=> $dateString]);    
             return Res::success($transaction, 'Data Antrian');
