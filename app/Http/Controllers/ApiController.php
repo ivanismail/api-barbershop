@@ -135,6 +135,7 @@ class ApiController extends Controller
             // }
             $create = null;
             if ($payment_methode == 'Tunai') {
+                //* CREATE TRANSACTION
                 $create = Booking::create([
                     'user_id' => $user->id,
                     'category_id' => $category,
@@ -149,7 +150,24 @@ class ApiController extends Controller
                     'status' => '2',
                     'datetime' => $eventDateTime
                 ]);
-            } else {
+            } else if ($payment_methode == 'Point') {
+                //* CEK SALDO POINT
+                $saldo = Point::where('user_id', $user->id)->lockForUpdate()->first();
+                //* PENAMBAHAN PPOINT
+                $point = GeneralSetting::where('code', 'REDEM')->first();
+                //* UPDATE SALDO USER
+                $last_balance = $saldo->balance;
+                $amount = $point->value;
+                //* CEK PENUKARAN POINT
+                if ($amount > $last_balance) { 
+                    DB::rollBack(); 
+                    return Res::error($saldo,'Maaf Saldo Point tidak cukup.'); 
+                }
+                $new_balance = $last_balance - $amount;
+                $saldo->update([
+                    'balance' => $new_balance,
+                ]);
+                //* CREATE TRANSACTION
                 $create = Booking::create([
                     'user_id' => $user->id,
                     'category_id' => $category,
@@ -161,7 +179,7 @@ class ApiController extends Controller
                     'note' => $note,
                     'payment_methode' => $payment_methode,
                     // 'expired' => Carbon::now()->addMinutes(60),
-                    'status' => '1',
+                    'status' => '2',
                 ]);
             }           
             DB::commit();
