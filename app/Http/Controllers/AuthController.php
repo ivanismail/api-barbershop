@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Exception;
 use App\Library\Res;
 use App\Models\User;
+use App\Models\Point;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -103,6 +104,8 @@ class AuthController extends Controller
                 'active' => true
             ]);            
             $user = User::where('phone_number', $phoneNumber)->first();
+            //* CREATE POINT
+            Point::create(['user_id' => $user->id, 'balance' => '0']);
             $tokenResult = $user->createToken('authToken')->plainTextToken;            
             // DB::commit();
             return Res::success(['token' => 'Bearer '.$tokenResult,'user' => $user],'User Registered');
