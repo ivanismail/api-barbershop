@@ -37,6 +37,7 @@ class GeneralSeetingSeeder extends Seeder
             ['code' => 'schedule', 'value' => '19', 'value_2' => '', 'description' => '19:00', 'active' => true],
             ['code' => 'schedule', 'value' => '20', 'value_2' => '', 'description' => '20:00', 'active' => true],
             ['code' => 'REDEM', 'value' => '10', 'value_2' => '', 'description' => 'Minimal Redeem Point', 'active' => true],
+            ['code' => 'POINT', 'value' => '1', 'value_2' => '', 'description' => 'Point Per Transaksi', 'active' => true],
         ]);
     }
 }
