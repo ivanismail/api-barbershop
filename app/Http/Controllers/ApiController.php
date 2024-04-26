@@ -150,7 +150,7 @@ class ApiController extends Controller
                     'status' => '2',
                     'datetime' => $eventDateTime
                 ]);
-            } else if ($payment_methode == 'Point') {
+            } else if ($payment_methode == 'Poin') {
                 //* CEK SALDO POINT
                 $saldo = Point::where('user_id', $user->id)->lockForUpdate()->first();
                 //* PENAMBAHAN PPOINT
