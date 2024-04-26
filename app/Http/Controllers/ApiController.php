@@ -9,6 +9,7 @@ use App\Models\Booking;
 use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Models\GeneralSetting;
+use App\Models\Point;
 use Illuminate\Support\Carbon;
 use App\Models\ServiceCategory;
 use Illuminate\Support\Facades\DB;
@@ -221,6 +222,20 @@ class ApiController extends Controller
             return Res::success($transaction, 'Data Antrian');
          } catch (\Throwable $th) {   
             return Res::error($th, 'Server Error');
+         } 
+     }
+     public function point(Request $req)
+     {
+         try {
+            //* CEK USER ACTIVE
+            $user = User::whereId(auth()->user()->id)->where('active', '1')->first();
+            if(is_null($user)){
+                return Res::error(null, "User Not Found");
+            }
+             $data = Point::where('user_id', $user->id)->first();
+             return Res::success($data, 'Data Point');
+         } catch (\Throwable $th) {
+             return Res::error($th, 'Server Error');
          } 
      }
 }

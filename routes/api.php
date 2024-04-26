@@ -32,4 +32,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('general-setting', [ApiController::class, 'gs']);    
     Route::post('check-availability', [ApiController::class, 'check_availability']);
     Route::get('queue', [ApiController::class, 'queue']);
+    Route::get('point', [ApiController::class, 'point']);
 });
