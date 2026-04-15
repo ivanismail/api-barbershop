@@ -22,58 +22,74 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        try{
+        try {
             //Validasi input
             $request->validate([
-                'phone_number'=>'required',
-                'password'=>'required'
+                'phone_number' => 'required',
+                'password' => 'required'
             ]);
 
             //Mengecek credential login
-            $credentials = request(['phone_number','password']);
-            if(!Auth::attempt($credentials)){
-                return Res::error(null,'Password atau no hanphone salah', 401);
+            $credentials = request(['phone_number', 'password']);
+            if (!Auth::attempt($credentials)) {
+                return Res::error(null, 'Password atau no hanphone salah', 401);
             }
 
             //Jika hash tidak sesuai maka beri error
             $user = User::where('phone_number', $request->phone_number)->first();
-            if(!Hash::check($request->password, $user->password, [])) {
+            if (!Hash::check($request->password, $user->password, [])) {
                 throw new \Exception('Invalid Credentials');
             }
 
             //Cek akun aktif
-            if($user->active ==  false){return Res::error(null,'Akun sudah tidak aktif', 401);}
+            if ($user->active ==  false) {
+                return Res::error(null, 'Akun sudah tidak aktif', 401);
+            }
             //Jika berhasil maka loginkan
             $tokenResult = $user->createToken('authToken')->plainTextToken;
             //UPDATE FCM TOKEN
             $user->update([
-            'fcm_token' => $request->fcm_token,
-            'remember_token' => $tokenResult
+                'fcm_token' => $request->fcm_token,
+                'remember_token' => $tokenResult
             ]);
             return Res::success([
                 'token' => $tokenResult,
                 'user' => $user
             ], 'Aunthenticated');
-
-        } catch(Exception $error) {
+        } catch (Exception $error) {
             return Res::error([
                 'message' => 'Someting went wrong',
                 'error' => $error
-            ],'Aunthenticated Failed', 500);
+            ], 'Aunthenticated Failed', 500);
         }
     }
     public function register(Request $request)
     {
-        $validation =  Validator::make(
+        // NORMALISASI NOMOR DULU
+        $phone_number = $request->phone_number;
+        if ($phone_number[0] == '0') {
+            $phone_number = substr($phone_number, 1);
+        }
+
+        // MERGE KE REQUEST
+        $request->merge([
+            'phone_number' => $phone_number
+        ]);
+
+        $validation = Validator::make(
             $request->all(),
             [
                 'name' => 'required|min:3|string',
-                'phone_number' => 'required|unique:users,phone_number|digits_between:9,13',
+                'phone_number' => 'required|digits_between:9,13|unique:users,phone_number',
                 'password' => [
-                    'required', 'min:6', 'max:18', Password::min(6)
+                    'required',
+                    'min:6',
+                    'max:18',
+                    Password::min(6)
                 ],
                 'confirm_password' => 'required|same:password',
-            ],[
+            ],
+            [
                 'name.required' => 'Nama harus diisi',
                 'phone_number.required' => 'No Handphone harus diisi',
                 'password.required' => 'Password harus diisi',
@@ -85,33 +101,40 @@ class AuthController extends Controller
             ]
         );
 
-        if($validation->fails()){
+        if ($validation->fails()) {
             return Res::errorValidation($validation->errors());
         }
-        // try{
-            // DB::beginTransaction();
-            $phone_number = $request->phone_number;
-            $phoneNumber = null;
-            if ($phone_number[0] == '0') {
-                $phoneNumber = substr($phone_number, 1);
-            } else {
-                $phoneNumber = $phone_number;
-            }            
+
+        try {
+            DB::beginTransaction();
+
             User::create([
                 'name' => $request->name,
-                'phone_number' => $phoneNumber,
+                'phone_number' => $phone_number,
                 'password' => Hash::make($request->password),
                 'active' => true
-            ]);            
-            $user = User::where('phone_number', $phoneNumber)->first();
-            //* CREATE POINT
-            Point::create(['user_id' => $user->id, 'balance' => '0']);
-            $tokenResult = $user->createToken('authToken')->plainTextToken;            
-            // DB::commit();
-            return Res::success(['token' => 'Bearer '.$tokenResult,'user' => $user],'User Registered');
-        // } catch(Exception $error){
-        //     DB::rollBack();
-        //     return Res::error(['message' => 'Someting went wrong',],'Aunthenticated Failed', 500);
-        // }
+            ]);
+
+            $user = User::where('phone_number', $phone_number)->first();
+
+            Point::create([
+                'user_id' => $user->id,
+                'balance' => '0'
+            ]);
+
+            $tokenResult = $user->createToken('authToken')->plainTextToken;
+
+            DB::commit();
+
+            return Res::success([
+                'token' => 'Bearer ' . $tokenResult,
+                'user' => $user
+            ], 'User Registered');
+        } catch (Exception $error) {
+            DB::rollBack();
+            return Res::error([
+                'message' => 'Something went wrong',
+            ], 'Authentication Failed', 500);
+        }
     }
 }
